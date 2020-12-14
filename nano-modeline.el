@@ -280,6 +280,22 @@
                          (shorten-directory default-directory 32)))
 
 ;; ---------------------------------------------------------------------
+(defun nano-modeline-vterm-mode-p ()
+  (derived-mode-p 'vterm-mode))
+
+(defun nano-modeline-vterm-modeline-status ()
+  (require 'dash)
+  (let ((vterm-copy-mode (seq-contains (--filter (and (boundp it) (symbol-value it)) minor-mode-list) 'vterm-copy-mode)))
+    (if vterm-copy-mode "RO" " >_ ")))
+
+(defun nano-modeline-vterm-mode ()
+  (let ((buffer-name (format-mode-line "%b")))
+    (nano-modeline-compose (nano-modeline-vterm-modeline-status)
+                           buffer-name
+                           (concat "(" shell-file-name ")")
+                           (shorten-directory default-directory 32))))
+
+;; ---------------------------------------------------------------------
 (defun nano-modeline-mu4e-main-mode-p ()
   (derived-mode-p 'mu4e-main-mode))
 
@@ -484,6 +500,7 @@
 	   ((nano-modeline-completion-list-mode-p) (nano-modeline-completion-list-mode))
 	   ((nano-modeline-message-mode-p)         (nano-modeline-message-mode))
            ((nano-modeline-nano-help-mode-p)       (nano-modeline-nano-help-mode))
+           ((nano-modeline-vterm-mode-p)           (nano-modeline-vterm-mode))
            (t                                      (nano-modeline-default-mode)))))))
 
 ;; ---------------------------------------------------------------------
