@@ -284,8 +284,13 @@
   (derived-mode-p 'vterm-mode))
 
 (defun nano-modeline-vterm-modeline-status ()
-  (require 'dash)
-  (let ((vterm-copy-mode (seq-contains (--filter (and (boundp it) (symbol-value it)) minor-mode-list) 'vterm-copy-mode)))
+  (let ((vterm-copy-mode
+         (seq-some (lambda (it)
+                     (and
+                      (boundp it)
+                      (symbol-value it)
+                      (eq it 'vterm-copy-mode)))
+                   minor-mode-list)))
     (if vterm-copy-mode "RO" " >_ ")))
 
 (defun nano-modeline-vterm-mode ()
